@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>書頁間的盛夏時光｜劉宸安</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Google Fonts：思源宋體 (Noto Serif TC) 與 思源黑體 (Noto Sans TC) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&family=Noto+Serif+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind 自訂色彩與字體設定 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Noto Serif TC"', 'serif'],
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                    },
+                    colors: {
+                        paper: {
+                            light: '#FAF6F0',
+                            warm: '#F3ECE1',
+                            dusk: '#1E1B18',
+                            duskCard: '#26221E',
+                        },
+                        wood: {
+                            dark: '#4A3328',
+                            medium: '#5C4033',
+                            light: '#8B5A2B',
+                            muted: '#9C7A5B',
+                        },
+                        sunlight: {
+                            gold: '#D4A373',
+                            glow: '#E9C46A',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* 紙張細微顆粒紋理背景 */
+        .paper-texture {
+            background-color: var(--bg-color, #FAF6F0);
+            background-image: 
+                radial-gradient(rgba(139, 90, 43, 0.04) 1px, transparent 0),
+                radial-gradient(rgba(92, 64, 51, 0.03) 1px, transparent 0);
+            background-size: 32px 32px;
+            background-position: 0 0, 16px 16px;
+            transition: background-color 0.7s ease, color 0.7s ease;
+        }
+
+        /* 氛圍模式變數 */
+        body.theme-afternoon {
+            --bg-color: #FAF6F0;
+            --text-primary: #3D2B22;
+            --text-secondary: #6E5344;
+            --border-color: rgba(139, 90, 43, 0.2);
+            --accent-color: #8B5A2B;
+            --quote-bg: rgba(212, 163, 115, 0.12);
+        }
+
+        body.theme-dusk {
+            --bg-color: #1F1B18;
+            --text-primary: #E8DFD5;
+            --text-secondary: #B8A696;
+            --border-color: rgba(212, 163, 115, 0.25);
+            --accent-color: #D4A373;
+            --quote-bg: rgba(212, 163, 115, 0.08);
+        }
+
+        /* 窗欞與斑駁樹影光影動態 */
+        @keyframes swayLeaves {
+            0%, 100% {
+                transform: translate(0px, 0px) rotate(0deg) scale(1);
+            }
+            33% {
+                transform: translate(12px, -8px) rotate(1.5deg) scale(1.03);
+            }
+            66% {
+                transform: translate(-10px, 6px) rotate(-1deg) scale(0.98);
+            }
+        }
+
+        @keyframes sunPulse {
+            0%, 100% {
+                opacity: 0.55;
+            }
+            50% {
+                opacity: 0.85;
+            }
+        }
+
+        .sunbeam-layer {
+            animation: sunPulse 8s ease-in-out infinite;
+        }
+
+        .leaf-shadow-layer {
+            animation: swayLeaves 14s ease-in-out infinite;
+            transform-origin: top right;
+        }
+
+        /* 滾動淡入效果 (Scroll Reveal) */
+        .reveal-section {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1), transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 首字下沉 (Drop Cap) */
+        .drop-cap::first-letter {
+            float: left;
+            font-size: 3.35rem;
+            line-height: 0.88;
+            padding-top: 4px;
+            padding-right: 12px;
+            padding-bottom: 2px;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        /* 直書裝飾文字 */
+        .writing-vertical {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            letter-spacing: 0.35em;
+        }
+
+        /* 隱藏原生捲軸美化 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(139, 90, 43, 0.3);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(139, 90, 43, 0.5);
+        }
+    </style>
+</head>
+<body class="paper-texture theme-afternoon font-serif antialiased selection:bg-sunlight-gold/30 selection:text-wood-dark relative overflow-x-hidden">
+
+    <!-- 頂部閱讀進度條 -->
+    <div class="fixed top-0 left-0 w-full h-1.5 z-50 bg-wood-light/10 backdrop-blur-xs">
+        <div id="reading-progress" class="h-full bg-gradient-to-r from-sunlight-gold via-wood-light to-wood-medium w-0 transition-all duration-150 ease-out rounded-r-full"></div>
+    </div>
+
+    <!-- 頂部懸浮文青工具列 (字體大小切換 / 氛圍切換 / 書籤) -->
+    <header class="fixed top-4 right-4 sm:top-6 sm:right-8 z-40 flex items-center gap-2 sm:gap-3">
+        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full border shadow-sm backdrop-blur-md transition-colors duration-500"
+             style="background-color: var(--quote-bg); border-color: var(--border-color);">
+            
+            <!-- 字體大小切換按鈕 -->
+            <button id="toggle-font-btn" type="button" title="切換字體大小"
+                    class="px-2.5 py-1.5 rounded-full text-xs sm:text-sm font-sans font-medium transition-all hover:bg-sunlight-gold/20 flex items-center gap-1 cursor-pointer"
+                    style="color: var(--text-primary);">
+                <svg class="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16M4 12h10M4 18h6"/>
+                </svg>
+                <span id="font-label">標準字級</span>
+            </button>
+
+            <span class="h-4 w-px opacity-25" style="background-color: var(--text-primary);"></span>
+
+            <!-- 氛圍切換按鈕 (午後陽光 / 傍晚微風) -->
+            <button id="toggle-theme-btn" type="button" title="切換閱讀氛圍"
+                    class="px-2.5 py-1.5 rounded-full text-xs sm:text-sm font-sans font-medium transition-all hover:bg-sunlight-gold/20 flex items-center gap-1.5 cursor-pointer"
+                    style="color: var(--text-primary);">
+                <span id="theme-icon">☀️</span>
+                <span id="theme-label">午後陽光</span>
+            </button>
+
+            <span class="h-4 w-px opacity-25" style="background-color: var(--text-primary);"></span>
+
+            <!-- 書籤收藏按鈕 -->
+            <button id="bookmark-btn" type="button" title="夾入書籤"
+                    class="p-1.5 rounded-full transition-all hover:bg-sunlight-gold/20 cursor-pointer relative"
+                    style="color: var(--accent-color);">
+                <svg id="bookmark-icon" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- 提示訊息框 (取代 alert) -->
+    <div id="toast-message" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-2.5 rounded-full shadow-lg font-sans text-sm tracking-wide opacity-0 pointer-events-none transition-all duration-500 transform translate-y-4 backdrop-blur-md border"
+         style="background-color: var(--bg-color); color: var(--text-primary); border-color: var(--border-color);">
+        已為您夾入書籤，留住這段盛夏光景。
+    </div>
+
+    <!-- ==========================================
+         首屏 (Hero Section)：窗欞光影與標題
+    =========================================== -->
+    <section class="relative min-h-[88vh] flex flex-col justify-center items-center px-6 py-20 overflow-hidden">
+        
+        <!-- 模擬陽光透過窗欞與樹影的 SVG 背景層 -->
+        <div class="pointer-events-none absolute inset-0 overflow-hidden select-none">
+            <!-- 溫暖陽光光暈 -->
+            <div class="sunbeam-layer absolute -top-24 -right-24 w-[420px] h-[420px] sm:w-[680px] sm:h-[680px] rounded-full bg-gradient-to-bl from-sunlight-glow/30 via-sunlight-gold/15 to-transparent blur-3xl"></div>
+            
+            <!-- 窗欞幾何光影投射 -->
+            <svg class="absolute top-0 right-0 w-full h-full opacity-20 sm:opacity-30" viewBox="0 0 1200 800" fill="none" preserveAspectRatio="xMaxYMin slice">
+                <defs>
+                    <linearGradient id="sunRay" x1="100%" y1="0%" x2="20%" y2="100%">
+                        <stop offset="0%" stop-color="#D4A373" stop-opacity="0.45"/>
+                        <stop offset="60%" stop-color="#D4A373" stop-opacity="0.1"/>
+                        <stop offset="100%" stop-color="#D4A373" stop-opacity="0"/>
+                    </linearGradient>
+                    <filter id="softBlur" x="-10%" y="-10%" width="120%" height="120%">
+                        <feGaussianBlur stdDeviation="12"/>
+                    </filter>
+                </defs>
+                <!-- 斜射窗光 -->
+                <g filter="url(#softBlur)">
+                    <polygon points="850,0 1050,0 620,750 420,750" fill="url(#sunRay)"/>
+                    <polygon points="1080,0 1200,0 850,750 650,750" fill="url(#sunRay)"/>
+                    <polygon points="920,180 1200,120 1200,320 750,420" fill="url(#sunRay)"/>
+                </g>
+                <!-- 微風晃動的樹葉斑駁剪影 -->
+                <g class="leaf-shadow-layer" filter="url(#softBlur)" fill="#8B5A2B" fill-opacity="0.14">
+                    <ellipse cx="960" cy="140" rx="65" ry="24" transform="rotate(-28 960 140)"/>
+                    <ellipse cx="1040" cy="190" rx="55" ry="20" transform="rotate(-15 1040 190)"/>
+                    <ellipse cx="890" cy="220" rx="70" ry="22" transform="rotate(-40 890 220)"/>
+                    <ellipse cx="1110" cy="110" rx="60" ry="18" transform="rotate(-22 1110 110)"/>
+                    <ellipse cx="980" cy="280" rx="50" ry="18" transform="rotate(-35 980 280)"/>
+                    <ellipse cx="820" cy="160" rx="45" ry="15" transform="rotate(-18 820 160)"/>
+                </g>
+            </svg>
+        </div>
+
+        <!-- 中心文藝標題排版 -->
+        <div class="relative z-10 max-w-3xl w-full mx-auto text-center space-y-8">
+            <!-- 頂部文學期刊小標 -->
+            <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border text-xs sm:text-sm font-sans tracking-[0.25em] uppercase transition-colors"
+                 style="border-color: var(--border-color); color: var(--text-secondary);">
+                <span>盛夏隨筆</span>
+                <span class="w-1 h-1 rounded-full bg-sunlight-gold"></span>
+                <span>青春散文集</span>
+            </div>
+
+            <!-- 主標題 -->
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-[0.12em] leading-tight transition-colors duration-500"
+                style="color: var(--text-primary);">
+                書頁間的盛夏時光
+            </h1>
+
+            <!-- 副標題 -->
+            <p class="text-base sm:text-lg md:text-xl font-normal tracking-[0.18em] opacity-85 max-w-xl mx-auto leading-relaxed"
+               style="color: var(--text-secondary);">
+                與老舊書桌、經典文學交織出的沉靜記憶
+            </p>
+
+            <!-- 精緻分隔線與作者印章 -->
+            <div class="pt-4 flex flex-col items-center justify-center gap-4">
+                <div class="w-16 h-px bg-sunlight-gold/60"></div>
+                <div class="flex items-center gap-3">
+                    <span class="text-sm sm:text-base tracking-[0.2em]" style="color: var(--text-secondary);">文／</span>
+                    <span class="text-lg sm:text-xl font-semibold tracking-[0.25em]" style="color: var(--text-primary);">劉宸安</span>
+                    <!-- 傳統紅色朱文小印章設計 -->
+                    <span class="inline-flex items-center justify-center w-6 h-6 text-[11px] font-bold border border-red-800/70 text-red-800/85 rounded-xs select-none" title="作者印記">
+                        安
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 向下閱讀引導 -->
+        <a href="#essay-content" aria-label="開始閱讀"
+           class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-xs font-sans tracking-[0.2em] opacity-65 hover:opacity-100 transition-opacity"
+           style="color: var(--text-secondary);">
+            <span>翻開書頁</span>
+            <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+            </svg>
+        </a>
+    </section>
+
+    <!-- ==========================================
+         主文閱讀區 (Article Section)
+    =========================================== -->
+    <main id="essay-content" class="relative max-w-3xl mx-auto px-6 sm:px-10 pb-28 pt-8">
+        
+        <!-- 左側裝飾性直書頁眉 (僅在寬螢幕顯示) -->
+        <aside class="hidden lg:block fixed left-10 top-1/2 -translate-y-1/2 opacity-35 select-none pointer-events-none"
+               style="color: var(--text-secondary);">
+            <p class="writing-vertical text-xs tracking-[0.4em]">
+                書頁間的盛夏時光・劉宸安著
+            </p>
+        </aside>
+
+        <!-- 文章外框：模擬精裝書頁留白與微質感卡片 -->
+        <article id="article-body" class="text-[1.125rem] sm:text-[1.22rem] leading-[2.15] tracking-[0.04em] space-y-12 transition-all duration-300"
+                 style="color: var(--text-primary);">
+
+            <!-- 第一段 -->
+            <section class="reveal-section">
+                <div class="flex items-center gap-3 mb-4 opacity-50">
+                    <span class="text-xs font-sans tracking-[0.25em]" style="color: var(--accent-color);">壹・序曲</span>
+                    <div class="h-px flex-1" style="background-color: var(--border-color);"></div>
+                </div>
+                <p class="drop-cap text-justify">
+                    炙熱的蟬鳴拉開了兩個月暑期的序幕，對許多人而言，快樂的暑假往往與主題樂園的歡笑、出國旅遊的驚喜或涼爽的水上活動劃上等號。然而，我心中最深沉且持久的快樂，卻鐫刻在一段沉靜無言的時光裡——那是我與老舊書桌、幾本經典文學交織出的暑期光景。
+                </p>
+            </section>
+
+            <!-- 第二段 -->
+            <section class="reveal-section">
+                <div class="flex items-center gap-3 mb-4 opacity-50">
+                    <span class="text-xs font-sans tracking-[0.25em]" style="color: var(--accent-color);">貳・墨香</span>
+                    <div class="h-px flex-1" style="background-color: var(--border-color);"></div>
+                </div>
+                <p class="text-justify indent-8">
+                    那是一個沒有安排密集補習與遠途旅行的夏天。午後的陽光透過窗欞，將斑駁的樹影投射在木質桌面，室內瀰漫著淡淡的墨香與陳年紙張的氣味。起初，面對突如其來的漫長空白，我也曾感到焦躁與不安，習慣了被緊湊課業推著走的節奏，驟然停下腳步反而令人茫然。直到我隨手翻開堆疊在桌角的那本小說，文字如同一道清泉，緩緩流淌進充斥著喧囂的心田。
+                </p>
+            </section>
+
+            <!-- 精選金句一 (Blockquote) -->
+            <figure class="reveal-section my-12 px-6 sm:px-10 py-8 rounded-2xl border-l-4 transition-colors duration-500 relative overflow-hidden"
+                    style="background-color: var(--quote-bg); border-left-color: var(--accent-color);">
+                <span class="absolute -top-3 right-6 text-7xl font-serif opacity-10 select-none" style="color: var(--accent-color);">”</span>
+                <blockquote class="text-lg sm:text-xl font-medium leading-[1.9] tracking-[0.06em]" style="color: var(--text-primary);">
+                    「文字如同一道清泉，緩緩流淌進充斥著喧囂的心田。」
+                </blockquote>
+            </figure>
+
+            <!-- 第三段 -->
+            <section class="reveal-section">
+                <div class="flex items-center gap-3 mb-4 opacity-50">
+                    <span class="text-xs font-sans tracking-[0.25em]" style="color: var(--accent-color);">參・對話</span>
+                    <div class="h-px flex-1" style="background-color: var(--border-color);"></div>
+                </div>
+                <p class="text-justify indent-8">
+                    在那個炎熱的暑假裡，我不再是為了考試而閱讀，而是純粹為了探索靈魂的深度。我跟隨書中的人物走過荒涼的大漠，體驗不同的生命悲喜，甚至在孤獨的文字對話中，重新審視了自己的內心世界。我不必在意鐘聲何時響起，也不必計算分數的高低，時間彷彿在頁碼的翻動間變得寬廣而富有彈性。那種擺脫世俗評價、與自己深刻對話的自由感，帶來了一種前所未有的安寧與滿足。
+                </p>
+            </section>
+
+            <!-- 第四段 -->
+            <section class="reveal-section">
+                <div class="flex items-center gap-3 mb-4 opacity-50">
+                    <span class="text-xs font-sans tracking-[0.25em]" style="color: var(--accent-color);">肆・沉澱</span>
+                    <div class="h-px flex-1" style="background-color: var(--border-color);"></div>
+                </div>
+                <p class="text-justify indent-8">
+                    當暑假漸入尾聲，開學的腳步逼近，我發現自己帶走的不是幾張遊樂園的門票，而是一顆變得更加平靜且充實的心靈。快樂未必來自外在刺激的極致享受，更多時候，它源於內心獲得的滋養與沉澱。那段看似安靜無華的閱讀時光，成為我青春記憶中最亮麗的一抹色彩，也在日後的繁重學業中，持續為我提供源源不絕的精神能量。
+                </p>
+            </section>
+
+            <!-- 精選金句二 (核心主旨結語卡片) -->
+            <figure class="reveal-section mt-16 p-8 sm:p-10 rounded-2xl border text-center space-y-4 transition-colors duration-500 shadow-xs"
+                    style="background-color: var(--quote-bg); border-color: var(--border-color);">
+                <div class="inline-block text-sunlight-gold">
+                    <svg class="w-6 h-6 mx-auto opacity-80" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/>
+                    </svg>
+                </div>
+                <blockquote class="text-xl sm:text-2xl font-semibold leading-[1.85] tracking-[0.06em]" style="color: var(--text-primary);">
+                    「快樂未必來自外在刺激的極致享受，<br class="hidden sm:inline">更多時候，它源於內心獲得的滋養與沉澱。」
+                </blockquote>
+                <figcaption class="text-xs sm:text-sm font-sans tracking-[0.2em] pt-2" style="color: var(--text-secondary);">
+                    —— 劉宸安〈書頁間的盛夏時光〉
+                </figcaption>
+            </figure>
+
+        </article>
+
+        <!-- 文末互動與頁尾 -->
+        <footer class="reveal-section mt-24 pt-12 border-t flex flex-col sm:flex-row items-center justify-between gap-6 text-sm font-sans"
+                style="border-color: var(--border-color); color: var(--text-secondary);">
+            <div class="flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-sunlight-gold"></span>
+                <span class="tracking-widest">感謝閱讀・願文字常伴左右</span>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button id="back-to-top" type="button"
+                        class="px-4 py-2 rounded-full border text-xs tracking-widest transition-all hover:bg-sunlight-gold/15 cursor-pointer flex items-center gap-1.5"
+                        style="border-color: var(--border-color); color: var(--text-primary);">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                    </svg>
+                    <span>回到頁首</span>
+                </button>
+            </div>
+        </footer>
+    </main>
+
+    <!-- 互動腳本 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const progressBar = document.getElementById('reading-progress');
+            const toggleFontBtn = document.getElementById('toggle-font-btn');
+            const fontLabel = document.getElementById('font-label');
+            const articleBody = document.getElementById('article-body');
+            const toggleThemeBtn = document.getElementById('toggle-theme-btn');
+            const themeIcon = document.getElementById('theme-icon');
+            const themeLabel = document.getElementById('theme-label');
+            const bookmarkBtn = document.getElementById('bookmark-btn');
+            const bookmarkIcon = document.getElementById('bookmark-icon');
+            const toastMessage = document.getElementById('toast-message');
+            const backToTopBtn = document.getElementById('back-to-top');
+
+            let isLargeFont = false;
+            let isDuskTheme = false;
+            let isBookmarked = false;
+            let toastTimeout;
+
+            // 顯示溫和的提示訊息 (取代 alert)
+            function showToast(msg) {
+                clearTimeout(toastTimeout);
+                toastMessage.textContent = msg;
+                toastMessage.classList.remove('opacity-0', 'translate-y-4');
+                toastMessage.classList.add('opacity-100', 'translate-y-0');
+
+                toastTimeout = setTimeout(() => {
+                    toastMessage.classList.remove('opacity-100', 'translate-y-0');
+                    toastMessage.classList.add('opacity-0', 'translate-y-4');
+                }, 2600);
+            }
+
+            // 1. 頂部閱讀進度條更新
+            function updateReadingProgress() {
+                const scrollTop = window.scrollY;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+                progressBar.style.width = `${Math.min(100, Math.max(0, progress))}%`;
+            }
+
+            window.addEventListener('scroll', updateReadingProgress, { passive: true });
+            updateReadingProgress();
+
+            // 2. 滾動淡入效果 (Intersection Observer)
+            const revealElements = document.querySelectorAll('.reveal-section');
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.12,
+                rootMargin: '0px 0px -40px 0px'
+            });
+
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // 3. 字體大小切換 (標準 / 放大)
+            toggleFontBtn.addEventListener('click', () => {
+                isLargeFont = !isLargeFont;
+                if (isLargeFont) {
+                    articleBody.classList.remove('text-[1.125rem]', 'sm:text-[1.22rem]');
+                    articleBody.classList.add('text-[1.3rem]', 'sm:text-[1.45rem]');
+                    fontLabel.textContent = '放大字級';
+                    showToast('已切換為舒適大字體模式');
+                } else {
+                    articleBody.classList.remove('text-[1.3rem]', 'sm:text-[1.45rem]');
+                    articleBody.classList.add('text-[1.125rem]', 'sm:text-[1.22rem]');
+                    fontLabel.textContent = '標準字級';
+                    showToast('已恢復為標準閱讀字級');
+                }
+            });
+
+            // 4. 氛圍切換 (午後陽光 / 傍晚微風)
+            toggleThemeBtn.addEventListener('click', () => {
+                isDuskTheme = !isDuskTheme;
+                if (isDuskTheme) {
+                    document.body.classList.remove('theme-afternoon');
+                    document.body.classList.add('theme-dusk');
+                    themeIcon.textContent = '🌙';
+                    themeLabel.textContent = '傍晚微風';
+                    showToast('切換至「傍晚微風」夜讀氛圍');
+                } else {
+                    document.body.classList.remove('theme-dusk');
+                    document.body.classList.add('theme-afternoon');
+                    themeIcon.textContent = '☀️';
+                    themeLabel.textContent = '午後陽光';
+                    showToast('切換至「午後陽光」暖紙氛圍');
+                }
+            });
+
+            // 5. 書籤互動細節
+            bookmarkBtn.addEventListener('click', () => {
+                isBookmarked = !isBookmarked;
+                if (isBookmarked) {
+                    bookmarkIcon.setAttribute('fill', 'currentColor');
+                    bookmarkIcon.classList.add('scale-110');
+                    showToast('已夾入書籤，珍藏這段盛夏閱讀時光');
+                } else {
+                    bookmarkIcon.setAttribute('fill', 'none');
+                    bookmarkIcon.classList.remove('scale-110');
+                    showToast('已取下書籤');
+                }
+            });
+
+            // 6. 回到頁首
+            backToTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
